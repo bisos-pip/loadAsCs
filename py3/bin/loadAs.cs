@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* ~[Summary]~ :: A =CmndSvc= for running the equivalent of facter in py and remotely with rpyc.
+* ~[Summary]~ :: A =CmndSvc= for uploading and absorbing a non-native CS module into PyCS framework.
 #+end_org """
 
 ####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-mu"
@@ -29,7 +29,8 @@
 ####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
-** This File: /l/pip/facter/py3/bin/facter.cs
+** This File: /bisos/git/bxRepos/bisos-pip/loadAsCs/py3/bin/loadAs.cs
+** File True Name: /bisos/git/auth/bxRepos/bisos-pip/loadAsCs/py3/bin/loadAs.cs
 ** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
 #+end_org """
 ####+END:
@@ -39,10 +40,10 @@
 * *[[elisp:(org-cycle)][| Particulars-csInfo |]]*
 #+end_org """
 import typing
-csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['facter'], }
-csInfo['version'] = '202502215707'
+csInfo: typing.Dict[str, typing.Any] = { 'moduleName': ['loadAs'], }
+csInfo['version'] = '202509285407'
 csInfo['status']  = 'inUse'
-csInfo['panel'] = 'facter-Panel.org'
+csInfo['panel'] = 'loadAs-Panel.org'
 csInfo['groupingType'] = 'IcmGroupingType-pkged'
 csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 ####+END:
@@ -50,8 +51,7 @@ csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 """ #+begin_org
 * [[elisp:(org-cycle)][| ~Description~ |]] :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/PyFwrk/bisos-pip/bisos.cs/_nodeBase_/fullUsagePanel-en.org][BISOS CmndSvcs Panel]]   [[elisp:(org-cycle)][| ]]
 
-This a =CmndSvc= for running the equivalent of facter in py and remotely with rpyc.
-With BISOS, it is used in CMDB remotely.
+This a =CmndSvc= for uploading and absorbing a non-native CS module into PyCS framework.
 
 ** Status: In use with BISOS
 ** /[[elisp:(org-cycle)][| Planned Improvements |]]/ :
@@ -143,7 +143,7 @@ def g_extraParams():
 #+end_org """
 ####+END:
 
-cs.invOutcomeReportControl(cmnd=True, ro=True)
+# cs.invOutcomeReportControl(cmnd=True, ro=True)
 
 ####+BEGIN: b:py3:cs:main/exposedSymbols :classes ()
 """ #+begin_org
@@ -208,7 +208,7 @@ class examples(cs.Cmnd):
 #+end_org """
 ####+END:
 
-####+BEGIN: b:py3:cs:framework/main :csInfo "csInfo" :noCmndEntry "examples" :extraParamsHook "g_extraParams" :importedCmndsModules "g_importedCmndsModules"
+####+BEGIN: b:py3:cs:framework/main :csInfo "csInfo" :noCmndEntry "examples" :extraParamsHook "g_extraParams" :importedCmndsModules "g_importedCmndsModules" :ignoreUnknownParams "True"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CsFrmWrk   [[elisp:(outline-show-subtree+toggle)][||]] =g_csMain= (csInfo, _examples_, g_extraParams, g_importedCmndsModules)
 #+end_org """
@@ -218,6 +218,7 @@ if __name__ == '__main__':
         csInfo=csInfo,
         noCmndEntry=examples,  # specify a Cmnd name
         extraParamsHook=g_extraParams,
+        ignoreUnknownParams=True,
         importedCmndsModules=g_importedCmndsModules,
     )
 

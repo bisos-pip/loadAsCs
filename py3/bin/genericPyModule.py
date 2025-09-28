@@ -1,5 +1,8 @@
-#
-#
+#   /bin/env loadAsHashTag.later
+
+__version__ = "1.0"
+
+pyModuleType = "generic"
 
 def genericMain(
         *args,
@@ -13,3 +16,16 @@ def genericMain(
     for key, value in kwargs.items():
       print(key, "->", value)
     print(f"In moduleMain")
+
+
+def genericCliParams ():
+    return [
+        (
+        "genericParName",  # parCliName
+        "Generic Parameter Name",  # parName
+        "Full Description of Parameter Comes Here", # parDescription
+        "Int", # parDataType
+        22, # parDefault
+        [3,22,99] # parChoices
+        )
+    ]

@@ -190,7 +190,9 @@ class examples_csu(cs.Cmnd):
 
         cmnd('verify', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
-        cmnd('run', pars=uploadPars, args=f"", comment=f" # Run the module with args+stdin")
+        cmnd('translateParams', pars=uploadPars, args=f"", comment=f" # Digest the Module")
+
+        cmnd('run', pars=uploadPars, args=f"arg1 secondArg", comment=f" # Run the module with args+stdin")
 
         # cmnd('vagBoxPath_obtain',
         #      wrapper=f"find  {oneDebianBaseBoxes} -print | grep pkr.hcl | ",
@@ -394,6 +396,50 @@ class verify(cs.Cmnd):
             opResults=result,
         )
 
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "translateParams" :extent "verify" :parsMand "upload" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<translateParams>>  =verify= parsMand=upload ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class translateParams(cs.Cmnd):
+    cmndParamsMandatory = [ 'upload', ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             upload: typing.Optional[str]=None,  # Cs Mandatory Param
+    ) -> b.op.Outcome:
+
+        failed = b_io.eh.badOutcome
+        callParamsDict = {'upload': upload, }
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        upload = csParam.mappedValue('upload', upload)
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+    ** [[elisp:(org-cycle)][| *CmndDesc:* | ]
+        #+end_org """)
+
+
+        if not (module := importModule(cmndOutcome=cmndOutcome).pyCmnd(
+                upload=upload,
+        ).results): return(b_io.eh.badOutcome(cmndOutcome))
+
+        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
+            argsList=['generic',],
+        )
+
+        loaderType = outcome.results
+
+        result = loaderType.translateParams(module,)
+
+        return cmndOutcome.set(
+            opError=b.OpError.Success,
+            opResults=result,
+        )
+
 
 ####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "run" :extent "verify" :parsMand "upload" :parsOpt "" :argsMin 0 :argsMax 9999 :pyInv ""
 """ #+begin_org
@@ -423,6 +469,8 @@ class run(cs.Cmnd):
     ** [[elisp:(org-cycle)][| *CmndDesc:* | ]
         #+end_org """)
 
+        print(argsList)
+
         cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, argsList)
 
         # stdinArgs = b_io.stdinReadLines()
@@ -437,7 +485,13 @@ class run(cs.Cmnd):
 
         loaderType = outcome.results
 
-        result = loaderType.callEntryPoint(module, *cmndArgs, kwArgs1="kwArgs1")
+        kwArgs = loaderType.translateParams(module,)
+
+        print(f"{cmndArgs}")
+
+        print(*cmndArgs)
+
+        result = loaderType.callEntryPoint(module, *cmndArgs, **kwArgs)
 
         return cmndOutcome.set(
             opError=b.OpError.Success,

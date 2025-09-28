@@ -102,6 +102,9 @@ log = logging.getLogger(__name__)
 from bisos.loadAsCs import abstractLoader
 import types
 
+import sys
+import argparse
+
 ####+BEGIN: bx:cs:py3:section :title "Configuration File Manager"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Configuration File Manager*  [[elisp:(org-cycle)][| ]]
@@ -167,12 +170,76 @@ class Loader_Generic (abstractLoader.AbstractLoader):
 ####+END:
             self,
             module: types.ModuleType,
-    ) -> None:
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """ #+begin_org
-*** [[elisp:(org-cycle)][| DocStr| ]]
+*** [[elisp:(org-cycle)][| DocStr| ]] module is an imported python module that must have a function called genericCliParams.
+        An example of return value of genericCliParams is:
+        [(
+        "genericParName",  # parCliName
+        "Generic Parameter Name",  # parName
+        "Full Description of Parameter Comes Here", # parDescription
+        "Int", # parDataType
+        22, # parDefault
+        [3,22,99] # parChoices
+        )]
+        The return value is then the KWARGS to be passed to callEntryPoint as **kwargs.
+        Where the parCliName is the keyword and the value is taken from command line arguments.
         #+end_org """
 
-        return
+        genericParams = []
+        try:
+            func = getattr(module, 'genericCliParams', None)
+            if func is None:
+                log.debug("module has no genericCliParams entry point: %s", getattr(module, '__name__', module))
+                return {}
+            if not callable(func):
+                log.debug("module.genericCliParams exists but is not callable: %s", getattr(module, '__name__', module))
+                return {}
+
+            # Call the genericCliParams per contract
+            genericParams = func() or []
+            # ensure we have a concrete list for iteration
+            try:
+                genericParams = list(genericParams)
+            except Exception:
+                genericParams = []
+        except Exception:
+            log.exception("Error while invoking genericCliParams")
+            return {}
+
+        inArgv = sys.argv[1:]
+
+        parser = argparse.ArgumentParser(add_help=False)
+
+        # Add one --long option per generic param
+        for eachGenericParam in genericParams:
+            if not eachGenericParam or not isinstance(eachGenericParam, (list, tuple)):
+                continue
+            parCliName = eachGenericParam[0]
+            parDescription = eachGenericParam[2] if len(eachGenericParam) > 2 else ''
+            longOpt = f"--{parCliName}"
+            parser.add_argument(longOpt, dest=parCliName, nargs='?', help=parDescription)
+
+        ns, _ = parser.parse_known_args(inArgv)
+
+        # Only include kwargs for options explicitly present on the command line
+        kwargs: dict[str, typing.Any] = {}
+        for eachGenericParam in genericParams:
+            if not eachGenericParam or not isinstance(eachGenericParam, (list, tuple)):
+                continue
+            parCliName = eachGenericParam[0]
+            longOpt = f"--{parCliName}"
+            if any(a == longOpt or a.startswith(longOpt + "=") for a in inArgv):
+                val = getattr(ns, parCliName, None)
+                # treat presence of boolean-like flags without value as True
+                parDataType = eachGenericParam[3] if len(eachGenericParam) > 3 else None
+                if val is None and isinstance(parDataType, str) and 'bool' in parDataType.lower():
+                    val = True
+                kwargs[parCliName] = val
+
+        return kwargs
+
+
 
 ####+BEGIN: b:py3:cs:method/typing :methodName "verify" :deco ""
     """ #+begin_org

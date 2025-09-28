@@ -68,6 +68,7 @@ requires = [
 
 scripts = [
 'bin/exmpl-loadAs.cs',
+'bin/genericPyModule.py',
 'bin/loadAs.cs',
 ]
 ####+END:

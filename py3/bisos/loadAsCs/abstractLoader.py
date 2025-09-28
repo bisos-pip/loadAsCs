@@ -182,12 +182,12 @@ class AbstractLoader(abc.ABC):
 ####+END:
             self,
             module: types.ModuleType,
-    ) -> None:
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """ #+begin_org
 *** [[elisp:(org-cycle)][| DocStr| ]]
         #+end_org """
 
-        return
+        return None
 
 ####+BEGIN: b:py3:cs:method/typing :methodName "verify" :deco "abc.abstractmethod"
     """ #+begin_org
