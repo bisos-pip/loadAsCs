@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ #+begin_org
-* ~[Summary]~ :: A =CS-Unit= for processing Vagrant Build Boxes (BUILD/create, ADD, RUN, CLEAN)
+* ~[Summary]~ :: A =CS-Unit= for importing, loading and running of external modules into the PyCS framework.
 #+end_org """
 
 ####+BEGIN: b:py3:cs:file/dblockControls :classification "cs-u"
@@ -28,8 +28,8 @@
 ####+BEGIN: b:prog:file/particulars :authors ("./inserts/authors-mb.org")
 """ #+begin_org
 * *[[elisp:(org-cycle)][| Particulars |]]* :: Authors, version
-** This File: /bisos/git/bxRepos/bisos-pip/vagrantBaseBoxes/py3/bisos/vagrantBaseBoxes/vagBoxes_csu.py
-** File True Name: /bisos/git/auth/bxRepos/bisos-pip/vagrantBaseBoxes/py3/bisos/vagrantBaseBoxes/vagBoxes_csu.py
+** This File: /bisos/git/auth/bxRepos/bisos-pip/loadAsCs/py3/bisos/loadAsCs/loadAsCs_csu.py
+** File True Name: /bisos/git/auth/bxRepos/bisos-pip/loadAsCs/py3/bisos/loadAsCs/loadAsCs_csu.py
 ** Authors: Mohsen BANAN, http://mohsen.banan.1.byname.net/contact
 #+end_org """
 ####+END:
@@ -49,7 +49,7 @@ csInfo['cmndParts'] = 'IcmCmndParts[common] IcmCmndParts[param]'
 
 """ #+begin_org
 * [[elisp:(org-cycle)][| ~Description~ |]] :: [[file:/bisos/git/auth/bxRepos/blee-binders/bisos-core/COMEEGA/_nodeBase_/fullUsagePanel-en.org][BISOS COMEEGA Panel]]
-This a =Cs-Unit= for processing Vagrant Build Boxes (BUILD/create, ADD, RUN, CLEAN).
+This a =Cs-Unit= for importing, loading and running of external modules into the PyCS framework.
 
 ** Relevant Panels:
 ** Status: In use with BISOS
@@ -106,13 +106,16 @@ import shutil
 
 from datetime import datetime
 
+from bisos.loadAsCs import abstractLoader
+from bisos.loadAsCs import loader_generic
+
 ####+BEGIN: b:py3:cs:orgItem/basic :type "=Executes=  "  :title "CSU-Lib Executions" :comment "-- cs.invOutcomeReportControl"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =Executes=   [[elisp:(outline-show-subtree+toggle)][||]] CSU-Lib Executions -- cs.invOutcomeReportControl  [[elisp:(org-cycle)][| ]]
 #+end_org """
 ####+END:
 
-cs.invOutcomeReportControl(cmnd=True, ro=True)
+# cs.invOutcomeReportControl(cmnd=True, ro=True)
 
 ####+BEGIN: b:py3:cs:orgItem/section :title "Common Parameters Specification" :comment "based on cs.param.CmndParamDict -- As expected from CSU-s"
 """ #+begin_org
@@ -120,15 +123,24 @@ cs.invOutcomeReportControl(cmnd=True, ro=True)
 #+end_org """
 ####+END:
 
-####+BEGIN: b:py3:cs:func/typing :funcName "commonParamsSpecify" :comment "~CSU Specification~" :funcType "ParSpc" :deco ""
+####+BEGIN: bx:dblock:python:func :funcName "commonParamsSpecify" :funcType "ParSpec" :retType "" :deco "" :argsList "csParams"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-T-ParSpc [[elisp:(outline-show-subtree+toggle)][||]] /commonParamsSpecify/  ~CSU Specification~  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-ParSpec  [[elisp:(outline-show-subtree+toggle)][||]] /commonParamsSpecify/ retType= argsList=(csParams)  [[elisp:(org-cycle)][| ]]
 #+end_org """
 def commonParamsSpecify(
+    csParams,
+):
 ####+END:
-        csParams: cs.param.CmndParamDict,
-) -> None:
-    pass
+    csParams.parDictAdd(
+        parName='upload',
+        parDescription="Upload a Python Module Into PyCS Framework",
+        parDataType=None,
+        parDefault=None,
+        parChoices=["any"],
+        # parScope=icm.CmndParamScope.TargetParam,
+        argparseShortOpt=None,
+        argparseLongOpt='--upload',
+    )
 
 
 ####+BEGIN: blee:bxPanel:foldingSection :outLevel 0 :sep nil :title "Direct Command Services" :anchor ""  :extraInfo "Examples and CSs"
@@ -137,9 +149,9 @@ def commonParamsSpecify(
 #+end_org """
 ####+END:
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_csu" :comment "" :parsMand "" :parsOpt "perfName" :argsMin 0 :argsMax 0 :pyInv ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_csu" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_csu>>  =verify= parsOpt=perfName ro=cli   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_csu>>  =verify= ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class examples_csu(cs.Cmnd):
     cmndParamsMandatory = [ ]
@@ -150,47 +162,43 @@ class examples_csu(cs.Cmnd):
     def cmnd(self,
              rtInv: cs.RtInvoker,
              cmndOutcome: b.op.Outcome,
-             perfName: typing.Optional[str]=None,  # Cs Optional Param
     ) -> b.op.Outcome:
 
         failed = b_io.eh.badOutcome
-        callParamsDict = {'perfName': perfName, }
+        callParamsDict = {}
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
             return failed(cmndOutcome)
-        perfName = csParam.mappedValue('perfName', perfName)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  This command serves as a basic example,
-        demonstrating the usage of various discrete and compound commands related to Vagrant box paths.
         #+end_org """)
 
         od = collections.OrderedDict
         cmnd = cs.examples.cmndEnter
         literal = cs.examples.execInsert
 
-        herePkrPath = "./us.pkr.hcl"
-        oneVagBoxPath = "/bisos/git/bxRepos/bxObjects/bro_vagrantDebianBaseBoxes/qemu/debian/13/trixie/amd64/netinst/us.pkr.hcl"
-        oneDebianBaseBoxes = "/bisos/git/bxRepos/bxObjects/bro_vagrantDebianBaseBoxes/qemu"
+        # forceModePars = od([('force', 't'),])
+        # infoLogPars = od([('verbosity', '20'),])
 
-        forceModePars = od([('force', 't'),])
-        infoLogPars = od([('verbosity', '20'),])        
+        uploadPars = od([('upload', "./genericPyModule.py")])
 
-        cs.examples.menuChapter('=Discrete Commands=')
+        cs.examples.menuSection('/Upload Python Module/')
 
-        cs.examples.menuSection('/vagBoxPath ---  PathInfo Obtain/')
+        cmnd('importModule', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
-        cmnd('vagBoxPath_obtain',  args=herePkrPath)
-        cmnd('vagBoxPath_obtain',  args=oneVagBoxPath)
-        cmnd('vagBoxPath_obtain', pars=infoLogPars,  args=oneVagBoxPath)        
-        cmnd('vagBoxPath_obtain',
-             wrapper=f"find  {oneDebianBaseBoxes} -print | grep pkr.hcl | ",
-             )
+        cmnd('loaderTypesAdd', args=f"generic", comment=f" # Digest the Module")
+
+        cmnd('verify', pars=uploadPars, args=f"", comment=f" # Digest the Module")
+
+        cmnd('run', pars=uploadPars, args=f"", comment=f" # Run the module with args+stdin")
+
+        # cmnd('vagBoxPath_obtain',
+        #      wrapper=f"find  {oneDebianBaseBoxes} -print | grep pkr.hcl | ",
+        #      )
 
         cs.examples.menuChapter('=Related Commands=')
 
-        literal("vagrantBaseBoxes-sbom.cs")
-        literal("lcaVagrantBinsPrep.sh")
-        literal("vagrantCommonCmnds.cs")                
+        literal("NOTYET.cs")
 
         return(cmndOutcome)
 
@@ -225,7 +233,6 @@ class examples_seed(cs.Cmnd):
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  This command serves as a basic example,
-        demonstrating the usage of various discrete and compound commands related to Vagrant box paths.
         #+end_org """)
 
         od = collections.OrderedDict
@@ -235,51 +242,57 @@ class examples_seed(cs.Cmnd):
         #
         # Should be IMPORTED here, not at the top -- Otherwise atexit is triggered for ALL of the CSMU.
         #
-        # from bisos.vagrantBaseBoxes import vagBoxSeed
-
-        vagBoxList = vagBoxSeed.vagBoxSeedInfo.vagBoxList
-        if vagBoxList is None:
-            vagBoxList = []
-
-        forceModePars = od([('force', 't'),])
-        # infoLogPars = od([('verbosity', '20'),])
-
-        cs.examples.menuChapter('=Discrete Commands=')
-
-        cs.examples.menuSection('/vagBoxPath ---  PathInfo Obtain/')
-
-        for each in vagBoxList:
-            cmnd('vagBoxPath_obtain',  args=each)
-
-        cs.examples.menuSection('/vagBoxPath --- BUILD/')
+        # from bisos.loadAsCs import loadAsCs_seed
 
         cs.examples.menuChapter('=Related Commands=')
 
-        literal("vagrantBoxProc.cs")
-        literal("vagrantCommonCmnds.cs")
+        literal("NOTYET.cs")
 
         return(cmndOutcome)
 
 
-####+BEGIN: b:py3:cs:func/typing :funcName "boxFileAbsPathFromInfo" :comment "~CSU Specification~" :funcType "ParSpc" :deco ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "importModule" :extent "verify" :parsMand "upload" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  F-T-ParSpc [[elisp:(outline-show-subtree+toggle)][||]] /boxFileAbsPathFromInfo/  ~CSU Specification~  [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<importModule>>  =verify= parsMand=upload ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
-def boxFileAbsPathFromInfo(
+class importModule(cs.Cmnd):
+    cmndParamsMandatory = [ 'upload', ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             upload: typing.Optional[str]=None,  # Cs Mandatory Param
+    ) -> b.op.Outcome:
+
+        failed = b_io.eh.badOutcome
+        callParamsDict = {'upload': upload, }
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        upload = csParam.mappedValue('upload', upload)
 ####+END:
-) -> pathlib.Path:
-    boxPathInfo = vagBoxPathInfo.boxPathInfo
-    boxFileName = boxFileNameFromInfo()
-    boxFileAbsPath = boxPathInfo.boxBaseDir.joinpath(boxFileName)
-    return boxFileAbsPath
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]]
+        #+end_org """)
+
+        importer = abstractLoader.PyModuleImporter(upload)
+
+        module = importer.importModule()
+        # module = b.importFile.importFileAs("uploadedModule", upload)
+        
+        return cmndOutcome.set(
+            opError=b.OpError.Success,
+            opResults=module,
+        )
 
 
-
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "vagBoxPath_run" :extent "verify" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 9999 :pyInv ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "loaderTypesAdd" :extent "verify" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 1 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<vagBoxPath_run>>  =verify= argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<loaderTypesAdd>>  =verify= argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
-class vagBoxPath_run(cs.Cmnd):
+class loaderTypesAdd(cs.Cmnd):
     cmndParamsMandatory = [ ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
@@ -298,57 +311,20 @@ class vagBoxPath_run(cs.Cmnd):
         cmndArgsSpecDict = self.cmndArgsSpec()
 ####+END:
         self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Build and add a Vagrant box to the local environment, with an option to force the addition.
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Add the loaderTypes
         #+end_org """)
 
-        cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, argsList)
+        cmndArg = self.cmndArgsGet("0&1", cmndArgsSpecDict, argsList)
 
-        def processArgsAndStdin(cmndArgs, process):
+        print(f"getattr invocation of :: loader_{cmndArg}.loaderType_{cmndArg}().pyCmnd()")
+        # NOTYET, needs to be done with getattr
+        outcome = loader_generic.loaderType_generic().pyCmnd()
 
-            for each in cmndArgs:
-                process(each)
-            stdinArgs = b_io.stdin.readAsList()
-            for each in stdinArgs:
-                process(each)
-
-        def process(vagBoxPkrFileStr):
-
-            print(f"Running (vagrant up) {vagBoxPkrFileStr}")
-            
-            boxPathInfo = vagBoxPathInfo.vagBoxPathExtractInfo(pathlib.Path(vagBoxPkrFileStr))
-            if boxPathInfo is None:
-                return failed(cmndOutcome, f"Missing {vagBoxPkrFileStr}")
-
-            boxBaseDir = boxPathInfo.boxBaseDir
-
-            vagRunBaseDirAbsPath = vagRunBaseDirAbsPathFromInfo()
-            vagRunBaseDirAbsPath.mkdir(exist_ok=True)
-
-            vagRunVagrantfileAbsPath = vagRunBaseDirAbsPath.joinpath("Vagrantfile")
-
-            # __main__ is used to enable generic config menus
-            __main__.vagrantFile.configFileUpdate()
-
-            if not vagRunVagrantfileAbsPath.is_file():
-                return failed(cmndOutcome, f"Missing {vagRunVagrantfileAbsPath}")
-
-            if b.subProc.Op(outcome=cmndOutcome,
-                            cd=vagRunBaseDirAbsPath,
-                            log=1).bash(
-                f"""env vagrant destroy --force"""
-            ).isProblematic():  return(b_io.eh.badOutcome(cmndOutcome))
-
-            if b.subProc.Op(outcome=cmndOutcome,
-                            cd=vagRunBaseDirAbsPath,
-                            log=1).bash(
-                f"""env vagrant up"""
-            ).isProblematic():  return(b_io.eh.badOutcome(cmndOutcome))
-
-        processArgsAndStdin(cmndArgs, process)
+        loaderType = outcome.results
 
         return cmndOutcome.set(
             opError=b.OpError.Success,
-            opResults=None,
+            opResults=loaderType,
         )
 
 ####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
@@ -364,23 +340,67 @@ class vagBoxPath_run(cs.Cmnd):
         cmndArgsSpecDict = cs.CmndArgsSpecDict()
 
         cmndArgsSpecDict.argsDictAdd(
-            argPosition="0&9999",
-            argName="vagBoxPkrFileStr",
+            argPosition="0&1",
+            argName="loaderType",
             argDefault='',
             argChoices=[],
-            argDescription="One argument, any string for vagBoxPath"
+            argDescription="Name of loaderType"
         )
 
         return cmndArgsSpecDict
 
 
-    
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "vagBoxPath_buildAdd" :extent "verify" :parsMand "force" :parsOpt "" :argsMin 0 :argsMax 9999 :pyInv ""
+
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "verify" :extent "verify" :parsMand "upload" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<vagBoxPath_buildAdd>>  =verify= parsMand=force argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<verify>>  =verify= parsMand=upload ro=cli   [[elisp:(org-cycle)][| ]]
 #+end_org """
-class vagBoxPath_buildAdd(cs.Cmnd):
-    cmndParamsMandatory = [ 'force', ]
+class verify(cs.Cmnd):
+    cmndParamsMandatory = [ 'upload', ]
+    cmndParamsOptional = [ ]
+    cmndArgsLen = {'Min': 0, 'Max': 0,}
+
+    @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
+    def cmnd(self,
+             rtInv: cs.RtInvoker,
+             cmndOutcome: b.op.Outcome,
+             upload: typing.Optional[str]=None,  # Cs Mandatory Param
+    ) -> b.op.Outcome:
+
+        failed = b_io.eh.badOutcome
+        callParamsDict = {'upload': upload, }
+        if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
+            return failed(cmndOutcome)
+        upload = csParam.mappedValue('upload', upload)
+####+END:
+        self.cmndDocStr(f""" #+begin_org
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Verify the integrity of a Python module by checking for required functions and structure.
+        #+end_org """)
+
+        if not (module := importModule(cmndOutcome=cmndOutcome).pyCmnd(
+                upload=upload,
+        ).results): return(b_io.eh.badOutcome(cmndOutcome))
+
+        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
+            argsList=['generic',],
+        )
+
+        loaderType = outcome.results
+
+        result = loaderType.verify(module)
+
+        return cmndOutcome.set(
+            opError=b.OpError.Success,
+            opResults=result,
+        )
+
+
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "run" :extent "verify" :parsMand "upload" :parsOpt "" :argsMin 0 :argsMax 9999 :pyInv ""
+""" #+begin_org
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<run>>  =verify= parsMand=upload argsMax=9999 ro=cli   [[elisp:(org-cycle)][| ]]
+#+end_org """
+class run(cs.Cmnd):
+    cmndParamsMandatory = [ 'upload', ]
     cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 9999,}
 
@@ -388,50 +408,40 @@ class vagBoxPath_buildAdd(cs.Cmnd):
     def cmnd(self,
              rtInv: cs.RtInvoker,
              cmndOutcome: b.op.Outcome,
-             force: typing.Optional[str]=None,  # Cs Mandatory Param
+             upload: typing.Optional[str]=None,  # Cs Mandatory Param
              argsList: typing.Optional[list[str]]=None,  # CsArgs
     ) -> b.op.Outcome:
 
         failed = b_io.eh.badOutcome
-        callParamsDict = {'force': force, }
+        callParamsDict = {'upload': upload, }
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, argsList).isProblematic():
             return failed(cmndOutcome)
         cmndArgsSpecDict = self.cmndArgsSpec()
-        force = csParam.mappedValue('force', force)
-####+END:<
+        upload = csParam.mappedValue('upload', upload)
+####+END:
         self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  Build, add, and clean a Vagrant box in the local environment, with an option to force the addition.
+    ** [[elisp:(org-cycle)][| *CmndDesc:* | ]
         #+end_org """)
 
         cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, argsList)
 
-        def processArgsAndStdin(cmndArgs, process):
-            for each in cmndArgs:
-                process(each)
-            stdinArgs = b_io.stdin.readAsList()
-            for each in stdinArgs:
-                process(each)
+        # stdinArgs = b_io.stdinReadLines()
 
-        def process(vagBoxPkrFileStr):
-            print(f"Building and adding Vagrant box from {vagBoxPkrFileStr}")
-            boxPathInfo = vagBoxPathInfo.vagBoxPathExtractInfo(pathlib.Path(vagBoxPkrFileStr))
-            if boxPathInfo is None:
-                return failed(cmndOutcome, f"Missing {vagBoxPkrFileStr}")
+        if not (module := importModule(cmndOutcome=cmndOutcome).pyCmnd(
+                upload=upload,
+        ).results): return(b_io.eh.badOutcome(cmndOutcome))
 
-            if vagBoxPath_build().pyCmnd(
-                    argsList=[vagBoxPkrFileStr,],
-            ).isProblematic(): return(b_io.eh.badOutcome(cmndOutcome))
+        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
+            argsList=['generic',],
+        )
 
-            if vagBoxPath_add().pyCmnd(
-                    force=force,
-                    argsList=[vagBoxPkrFileStr,],
-            ).isProblematic(): return(b_io.eh.badOutcome(cmndOutcome))
+        loaderType = outcome.results
 
-        processArgsAndStdin(cmndArgs, process)
+        result = loaderType.callEntryPoint(module, *cmndArgs, kwArgs1="kwArgs1")
 
         return cmndOutcome.set(
             opError=b.OpError.Success,
-            opResults=None,
+            opResults=result,
         )
 
 ####+BEGIN: b:py3:cs:method/args :methodName "cmndArgsSpec" :methodType "anyOrNone" :retType "bool" :deco "default" :argsList "self"
@@ -448,13 +458,14 @@ class vagBoxPath_buildAdd(cs.Cmnd):
 
         cmndArgsSpecDict.argsDictAdd(
             argPosition="0&9999",
-            argName="vagBoxPkrFileStr",
+            argName="cmndArgs",
             argDefault='',
             argChoices=[],
-            argDescription="One argument, any string for vagBoxPath"
+            argDescription="Command Args"
         )
 
         return cmndArgsSpecDict
+
 
 
 
