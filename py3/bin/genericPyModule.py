@@ -4,18 +4,25 @@ __version__ = "1.0"
 
 pyModuleType = "generic"
 
+import getpass
+
+
 def genericMain(
         *args,
         **kwargs,
 ):
-    print(f"genericMain(Args):")
-    print(f"{args}")
+    print(f"Running genericMain() As a LoadedAsCS:")
+    print(f"args :: {args}")
     print(f"genericMain(KWArgs):")
     print(f"{kwargs}")
 
     for key, value in kwargs.items():
       print(key, "->", value)
-    print(f"In moduleMain")
+
+    userName = getpass.getuser()
+
+
+    print(f"{userName} using import getpass is in genericMain")
 
 
 def genericCliParams ():

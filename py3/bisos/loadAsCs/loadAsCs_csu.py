@@ -318,7 +318,7 @@ class loaderTypesAdd(cs.Cmnd):
 
         cmndArg = self.cmndArgsGet("0&1", cmndArgsSpecDict, argsList)
 
-        print(f"getattr invocation of :: loader_{cmndArg}.loaderType_{cmndArg}().pyCmnd()")
+        # print(f"getattr invocation of :: loader_{cmndArg}.loaderType_{cmndArg}().pyCmnd()")
         # NOTYET, needs to be done with getattr
         outcome = loader_generic.loaderType_generic().pyCmnd()
 
@@ -469,7 +469,6 @@ class run(cs.Cmnd):
     ** [[elisp:(org-cycle)][| *CmndDesc:* | ]
         #+end_org """)
 
-        print(argsList)
 
         cmndArgs = self.cmndArgsGet("0&9999", cmndArgsSpecDict, argsList)
 
@@ -486,10 +485,6 @@ class run(cs.Cmnd):
         loaderType = outcome.results
 
         kwArgs = loaderType.translateParams(module,)
-
-        print(f"{cmndArgs}")
-
-        print(*cmndArgs)
 
         result = loaderType.callEntryPoint(module, *cmndArgs, **kwArgs)
 
