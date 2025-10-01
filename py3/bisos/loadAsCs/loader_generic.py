@@ -102,9 +102,6 @@ log = logging.getLogger(__name__)
 from bisos.loadAsCs import abstractLoader
 import types
 
-import sys
-import argparse
-
 ####+BEGIN: bx:cs:py3:section :title "Configuration File Manager"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  /Section/    [[elisp:(outline-show-subtree+toggle)][||]] *Configuration File Manager*  [[elisp:(org-cycle)][| ]]
@@ -207,37 +204,9 @@ class Loader_Generic (abstractLoader.AbstractLoader):
             log.exception("Error while invoking genericCliParams")
             return {}
 
-        inArgv = sys.argv[1:]
+        # print(f"{genericParams}")
 
-        parser = argparse.ArgumentParser(add_help=False)
-
-        # Add one --long option per generic param
-        for eachGenericParam in genericParams:
-            if not eachGenericParam or not isinstance(eachGenericParam, (list, tuple)):
-                continue
-            parCliName = eachGenericParam[0]
-            parDescription = eachGenericParam[2] if len(eachGenericParam) > 2 else ''
-            longOpt = f"--{parCliName}"
-            parser.add_argument(longOpt, dest=parCliName, nargs='?', help=parDescription)
-
-        ns, _ = parser.parse_known_args(inArgv)
-
-        # Only include kwargs for options explicitly present on the command line
-        kwargs: dict[str, typing.Any] = {}
-        for eachGenericParam in genericParams:
-            if not eachGenericParam or not isinstance(eachGenericParam, (list, tuple)):
-                continue
-            parCliName = eachGenericParam[0]
-            longOpt = f"--{parCliName}"
-            if any(a == longOpt or a.startswith(longOpt + "=") for a in inArgv):
-                val = getattr(ns, parCliName, None)
-                # treat presence of boolean-like flags without value as True
-                parDataType = eachGenericParam[3] if len(eachGenericParam) > 3 else None
-                if val is None and isinstance(parDataType, str) and 'bool' in parDataType.lower():
-                    val = True
-                kwargs[parCliName] = val
-
-        return kwargs
+        return genericParams
 
 
 
@@ -256,6 +225,10 @@ class Loader_Generic (abstractLoader.AbstractLoader):
         Returns True if genericMail exists, False otherwise.
         #+end_org """
 
+        params = self.translateParams(module)
+
+        print(f"{params}")
+
         # Per docstring: module is an imported python module that must have a
         # function called genericMain. Verify existence without calling it.
         try:
@@ -263,6 +236,8 @@ class Loader_Generic (abstractLoader.AbstractLoader):
             return callable(attr)
         except Exception:
             return False
+
+
 
 ####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "loaderType_generic" :extent "verify" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
 """ #+begin_org

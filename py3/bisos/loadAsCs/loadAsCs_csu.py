@@ -149,9 +149,9 @@ def commonParamsSpecify(
 #+end_org """
 ####+END:
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_csu" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_csu" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv "pyKwArgs"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_csu>>  =verify= ro=cli   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_csu>>  =verify= ro=cli pyInv=pyKwArgs   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class examples_csu(cs.Cmnd):
     cmndParamsMandatory = [ ]
@@ -162,6 +162,7 @@ class examples_csu(cs.Cmnd):
     def cmnd(self,
              rtInv: cs.RtInvoker,
              cmndOutcome: b.op.Outcome,
+             pyKwArgs: typing.Any=None,   # pyInv Argument
     ) -> b.op.Outcome:
 
         failed = b_io.eh.badOutcome
@@ -180,7 +181,16 @@ class examples_csu(cs.Cmnd):
         # forceModePars = od([('force', 't'),])
         # infoLogPars = od([('verbosity', '20'),])
 
-        uploadPars = od([('upload', "./genericPyModule.py")])
+        uploadPath = "./genericPyModule.py"
+
+        if pyKwArgs:
+            uploadPath =  pyKwArgs['upload']
+        else:
+            return failed(cmndOutcome)
+
+        # print(f"cmndKwArgs={pyKwArgs} uploadPath={uploadPath}")
+
+        uploadPars = od([('upload', uploadPath)])
 
         cs.examples.menuSection('/Upload Python Module/')
 
@@ -245,10 +255,17 @@ class examples_seed(cs.Cmnd):
         # Should be IMPORTED here, not at the top -- Otherwise atexit is triggered for ALL of the CSMU.
         #
         # from bisos.loadAsCs import loadAsCs_seed
+        #
+
+        uploadPars = od([('upload', "./genericPyModule.py")])
+
+        cs.examples.menuSection('/Verify Python Module/')
+
+        cmnd('verify', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
         cs.examples.menuChapter('=Related Commands=')
 
-        literal("NOTYET.cs")
+        literal("loadAs.cs  # seed of this plant")
 
         return(cmndOutcome)
 
@@ -318,11 +335,15 @@ class loaderTypesAdd(cs.Cmnd):
 
         cmndArg = self.cmndArgsGet("0&1", cmndArgsSpecDict, argsList)
 
+        print("loaderTypesAdd :: Command -- Historic and Unused")
+
         # print(f"getattr invocation of :: loader_{cmndArg}.loaderType_{cmndArg}().pyCmnd()")
         # NOTYET, needs to be done with getattr
-        outcome = loader_generic.loaderType_generic().pyCmnd()
+        #outcome = loader_generic.loaderType_generic().pyCmnd()
 
-        loaderType = outcome.results
+        # loaderType = outcome.results
+
+        loaderType = abstractLoader.loaderTypes.default()
 
         return cmndOutcome.set(
             opError=b.OpError.Success,
@@ -383,11 +404,7 @@ class verify(cs.Cmnd):
                 upload=upload,
         ).results): return(b_io.eh.badOutcome(cmndOutcome))
 
-        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
-            argsList=['generic',],
-        )
-
-        loaderType = outcome.results
+        loaderType = abstractLoader.loaderTypes.default()
 
         result = loaderType.verify(module)
 
@@ -427,11 +444,7 @@ class translateParams(cs.Cmnd):
                 upload=upload,
         ).results): return(b_io.eh.badOutcome(cmndOutcome))
 
-        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
-            argsList=['generic',],
-        )
-
-        loaderType = outcome.results
+        loaderType = abstractLoader.loaderTypes.default()
 
         result = loaderType.translateParams(module,)
 
@@ -478,13 +491,9 @@ class run(cs.Cmnd):
                 upload=upload,
         ).results): return(b_io.eh.badOutcome(cmndOutcome))
 
-        outcome = loaderTypesAdd(cmndOutcome=cmndOutcome).pyCmnd(
-            argsList=['generic',],
-        )
+        loaderType = abstractLoader.loaderTypes.default()
 
-        loaderType = outcome.results
-
-        kwArgs = loaderType.translateParams(module,)
+        kwArgs = loaderType.applicableParams(module,)
 
         result = loaderType.callEntryPoint(module, *cmndArgs, **kwArgs)
 
@@ -514,8 +523,6 @@ class run(cs.Cmnd):
         )
 
         return cmndArgsSpecDict
-
-
 
 
 ####+BEGIN: b:py3:cs:framework/endOfFile :basedOn "classification"

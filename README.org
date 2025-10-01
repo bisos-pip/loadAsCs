@@ -13,6 +13,12 @@
 
 #+END:
 
+* TODOs
+** TODO LoadAs.cs run on examples should have params.
+** TODO Verify should provide a report. ./module.py should be absolute.
+** TODO Pass to module.py as a parameter, its own full path.
+** TODO Setup and test a functional  seed-example
+
 * Overview
 
 /bisos.loadAsCs/ provides various facilities for creation and management of
@@ -35,6 +41,11 @@ processed with bisos.loadAsCs are available at:\\
 
 
 * Table of Contents     :TOC:
+- [[#todos][TODOs]]
+  - [[#loadascs-run-on-examples-should-have-params][LoadAs.cs run on examples should have params.]]
+  - [[#verify-should-provide-a-report-modulepy-should-be-absolute][Verify should provide a report. ./module.py should be absolute.]]
+  - [[#pass-to-modulepy-as-a-parameter-its-own-full-path][Pass to module.py as a parameter, its own full path.]]
+  - [[#setup-and-test-a-functional--seed-example][Setup and test a functional  seed-example]]
 - [[#overview][Overview]]
 - [[#a-standalone-piece-of-bisos-----bystar-internet-services-operating-system][A Standalone Piece of BISOS --- ByStar Internet Services Operating System]]
 - [[#prior-art-and-similar-art][Prior Art and Similar Art]]
