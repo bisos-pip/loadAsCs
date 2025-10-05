@@ -208,9 +208,9 @@ class examples_csu(cs.Cmnd):
         #      wrapper=f"find  {oneDebianBaseBoxes} -print | grep pkr.hcl | ",
         #      )
 
-        cs.examples.menuChapter('=Related Commands=')
+        # cs.examples.menuChapter('=Related Commands=')
 
-        literal("NOTYET.cs")
+        # literal("NOTYET.cs")
 
         return(cmndOutcome)
 
@@ -221,27 +221,26 @@ class examples_csu(cs.Cmnd):
 #+end_org """
 ####+END:
 
-####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_seed" :comment "" :parsMand "" :parsOpt "perfName" :argsMin 0 :argsMax 0 :pyInv ""
+####+BEGIN: b:py3:cs:cmnd/classHead :cmndName "examples_seed" :comment "" :parsMand "" :parsOpt "" :argsMin 0 :argsMax 0 :pyInv "pyKwArgs"
 """ #+begin_org
-*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_seed>>  =verify= parsOpt=perfName ro=cli   [[elisp:(org-cycle)][| ]]
+*  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  CmndSvc-   [[elisp:(outline-show-subtree+toggle)][||]] <<examples_seed>>  =verify= ro=cli pyInv=pyKwArgs   [[elisp:(org-cycle)][| ]]
 #+end_org """
 class examples_seed(cs.Cmnd):
     cmndParamsMandatory = [ ]
-    cmndParamsOptional = [ 'perfName', ]
+    cmndParamsOptional = [ ]
     cmndArgsLen = {'Min': 0, 'Max': 0,}
 
     @cs.track(fnLoc=True, fnEntry=True, fnExit=True)
     def cmnd(self,
              rtInv: cs.RtInvoker,
              cmndOutcome: b.op.Outcome,
-             perfName: typing.Optional[str]=None,  # Cs Optional Param
+             pyKwArgs: typing.Any=None,   # pyInv Argument
     ) -> b.op.Outcome:
 
         failed = b_io.eh.badOutcome
-        callParamsDict = {'perfName': perfName, }
+        callParamsDict = {}
         if self.invocationValidate(rtInv, cmndOutcome, callParamsDict, None).isProblematic():
             return failed(cmndOutcome)
-        perfName = csParam.mappedValue('perfName', perfName)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
 ** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  This command serves as a basic example,
@@ -257,15 +256,26 @@ class examples_seed(cs.Cmnd):
         # from bisos.loadAsCs import loadAsCs_seed
         #
 
-        uploadPars = od([('upload', "./genericPyModule.py")])
+        uploadPath = "./genericPyModule.py"
 
-        cs.examples.menuSection('/Verify Python Module/')
+        if pyKwArgs:
+            uploadPath =  pyKwArgs['upload']
+        else:
+            return failed(cmndOutcome)
+
+        # print(f"cmndKwArgs={pyKwArgs} uploadPath={uploadPath}")
+
+        uploadPars = od([('upload', uploadPath)])
+
+        cs.examples.menuSection('/Upload Python Module/')
+
+        cmnd('importModule', pars=uploadPars, args=f"", comment=f" # Digest the Module")
+
+        cmnd('loaderTypesAdd', args=f"generic", comment=f" # Digest the Module")
 
         cmnd('verify', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
-        cs.examples.menuChapter('=Related Commands=')
-
-        literal("loadAs.cs  # seed of this plant")
+        cmnd('translateParams', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
         return(cmndOutcome)
 
