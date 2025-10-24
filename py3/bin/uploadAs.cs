@@ -100,12 +100,12 @@ if b.cs.G.plantOfThisSeed is not None:
   (list
    "bisos.b.cs.ro"
    "bisos.csPlayer.bleep"
-   "bisos.loadAsCs.loadAsCs_csu"
+   "bisos.uploadAsCs.uploadAsCs_csu"
    "plantedCsu"
  ))
 #+END_SRC
 #+RESULTS:
-| bisos.b.cs.ro | bisos.csPlayer.bleep | bisos.loadAsCs.loadAsCs_csu | plantedCsu |
+| bisos.b.cs.ro | bisos.csPlayer.bleep | bisos.uploadAsCs.uploadAsCs_csu | plantedCsu |
 #+end_org """
 
 ####+BEGIN: b:py3:cs:framework/csuListProc :pyImports t :csuImports t :csuParams t :csmuParams nil
@@ -115,9 +115,9 @@ if b.cs.G.plantOfThisSeed is not None:
 
 from bisos.b.cs import ro
 from bisos.csPlayer import bleep
-from bisos.loadAsCs import loadAsCs_csu
+from bisos.uploadAsCs import uploadAsCs_csu
 
-csuList = [ 'bisos.b.cs.ro', 'bisos.csPlayer.bleep', 'bisos.loadAsCs.loadAsCs_csu', 'plantedCsu', ]
+csuList = [ 'bisos.b.cs.ro', 'bisos.csPlayer.bleep', 'bisos.uploadAsCs.uploadAsCs_csu', 'plantedCsu', ]
 
 if b.cs.G.plantOfThisSeed is None:
     csuList.remove('plantedCsu')
@@ -139,7 +139,7 @@ def g_extraParams():
 
 # cs.invOutcomeReportControl(cmnd=True, ro=True)
 
-from bisos.loadAsCs import loader_generic
+from bisos.uploadAsCs import loader_generic
 
 loader_generic.loaderType_generic().pyCmnd()
 
@@ -179,11 +179,11 @@ class examples(cs.Cmnd):
         cs.examples.commonBrief()
 
         if b.cs.G.plantOfThisSeed is None:
-            loadAsCs_csu.examples_csu().pyCmnd(
+            uploadAsCs_csu.examples_csu().pyCmnd(
                 pyKwArgs={'upload': "./genericPyModule.py"}
             )
         else:
-            loadAsCs_csu.examples_seed().pyCmnd()
+            uploadAsCs_csu.examples_seed().pyCmnd()
 
             examplesFuncsList = cmndsSeed.cmndsSeedInfo.examplesFuncsList
             if examplesFuncsList is not None:

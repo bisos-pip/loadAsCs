@@ -43,7 +43,7 @@ def longDescription():
 # b:py3:pypi:setup/version Arguments  :forSys t :forPyPi t :constant "666"
 ####+BEGIN: b:py3:pypi:setup/version :comment "Auto Detected"
 
-# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.13 -- forLocalVersion=0.1 -- constant=NA
+# ./pypiUploadVer DID NOT exist -- forPypiVersion=0.1 -- forLocalVersion=0.1 -- constant=NA
 def pkgVersion():
         return '0.1'
 
@@ -67,9 +67,9 @@ requires = [
 ####+BEGIN: b:py3:pypi:setup/scripts :comment ""
 
 scripts = [
-'bin/exmpl-loadAs.cs',
+'bin/exmpl-uploadAs.cs',
 'bin/genericPyModule.py',
-'bin/loadAs.cs',
+'bin/uploadAs.cs',
 ]
 ####+END:
 
@@ -85,7 +85,7 @@ data_files = [
 ####+BEGIN: b:py3:pypi:setup/funcArgs :comment "defaults to --auto--"
 
 setuptools.setup(
-    name=pkgName(),  # 'bisos.loadAsCs'
+    name=pkgName(),  # 'bisos.uploadAsCs'
     version=pkgVersion(),
     packages=setuptools.find_packages(),
     scripts=scripts,

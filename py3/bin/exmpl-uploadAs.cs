@@ -17,9 +17,9 @@ from bisos.b import b_io
 from bisos.basics import pathPlus
 from pathlib import Path
 
-from bisos.loadAsCs import loadAsCs_seed
+from bisos.uploadAsCs import uploadAsCs_seed
 
-loadAsCs_seed.setup(
+uploadAsCs_seed.setup(
     seedType="common",
 )
 

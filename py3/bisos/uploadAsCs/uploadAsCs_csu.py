@@ -106,8 +106,8 @@ import shutil
 
 from datetime import datetime
 
-from bisos.loadAsCs import abstractLoader
-from bisos.loadAsCs import loader_generic
+from bisos.uploadAsCs import abstractLoader
+from bisos.uploadAsCs import loader_generic
 
 ####+BEGIN: b:py3:cs:orgItem/basic :type "=Executes=  "  :title "CSU-Lib Executions" :comment "-- cs.invOutcomeReportControl"
 """ #+begin_org
