@@ -109,6 +109,8 @@ from datetime import datetime
 from bisos.uploadAsCs import abstractLoader
 from bisos.uploadAsCs import loader_generic
 
+from bisos.b import cmndsSeed
+
 ####+BEGIN: b:py3:cs:orgItem/basic :type "=Executes=  "  :title "CSU-Lib Executions" :comment "-- cs.invOutcomeReportControl"
 """ #+begin_org
 *  _[[elisp:(blee:menu-sel:outline:popupMenu)][±]]_ _[[elisp:(blee:menu-sel:navigation:popupMenu)][Ξ]]_ [[elisp:(outline-show-branches+toggle)][|=]] [[elisp:(bx:orgm:indirectBufOther)][|>]] *[[elisp:(blee:ppmm:org-mode-toggle)][|N]]*  =Executes=   [[elisp:(outline-show-subtree+toggle)][||]] CSU-Lib Executions -- cs.invOutcomeReportControl  [[elisp:(org-cycle)][| ]]
@@ -181,10 +183,13 @@ class examples_csu(cs.Cmnd):
         # forceModePars = od([('force', 't'),])
         # infoLogPars = od([('verbosity', '20'),])
 
-        uploadPath = "./genericPyModule.py"
+        uploadPath = "MISSING"
 
         if pyKwArgs:
-            uploadPath =  pyKwArgs['upload']
+            if pyKwArgs.get('uploadPath'):
+                uploadPath =  pyKwArgs['uploadPath']
+            else:
+                return failed(cmndOutcome)
         else:
             return failed(cmndOutcome)
 
@@ -243,35 +248,38 @@ class examples_seed(cs.Cmnd):
             return failed(cmndOutcome)
 ####+END:
         self.cmndDocStr(f""" #+begin_org
-** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  This command serves as a basic example,
+** [[elisp:(org-cycle)][| *CmndDesc:* | ]]  pyKwArgs 'upload' is mandatory
         #+end_org """)
 
         od = collections.OrderedDict
         cmnd = cs.examples.cmndEnter
         literal = cs.examples.execInsert
 
-        #
-        # Should be IMPORTED here, not at the top -- Otherwise atexit is triggered for ALL of the CSMU.
-        #
-        # from bisos.loadAsCs import loadAsCs_seed
-        #
-
-        uploadPath = "./genericPyModule.py"
+        uploadPath = "MISSING"
 
         if pyKwArgs:
-            uploadPath =  pyKwArgs['upload']
+            if pyKwArgs.get('uploadPath'):
+                uploadPath =  pyKwArgs['uploadPath']
+            else:
+                return failed(cmndOutcome)
         else:
             return failed(cmndOutcome)
+
+        # PlantedCSU through kwSeedInfo can overwrite uploadPath
+        kwSeedInfo = cmndsSeed.cmndsSeedInfo.kwSeedInfo
+        if kwSeedInfo:
+            if kwSeedInfo.get('uploadPath'):
+                uploadPath = kwSeedInfo['uploadPath']
 
         # print(f"cmndKwArgs={pyKwArgs} uploadPath={uploadPath}")
 
         uploadPars = od([('upload', uploadPath)])
 
-        cs.examples.menuSection('/Upload Python Module/')
+        cs.examples.menuSection('/Seeded: Upload Python Module/')
 
         cmnd('importModule', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
-        cmnd('loaderTypesAdd', args=f"generic", comment=f" # Digest the Module")
+        # cmnd('loaderTypesAdd', args=f"generic", comment=f" # Digest the Module")
 
         cmnd('verify', pars=uploadPars, args=f"", comment=f" # Digest the Module")
 
